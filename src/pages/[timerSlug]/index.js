@@ -1,9 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useRouter } from "next/router";
 import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react'
 import { ShareIcon } from '@heroicons/react/24/solid'
-import { add, parseISO} from 'date-fns'
+import { add, parseISO } from 'date-fns'
 import { toast } from "react-toastify";
+import { Confetti } from 'react-confetti'
+import ReactCanvasConfetti from 'react-canvas-confetti';
 
 const Home = () => {
     const session = useSession()
@@ -25,12 +27,22 @@ const Home = () => {
         }
     })
 
+    const canvasStyles = {
+        position: "fixed",
+        pointerEvents: "none",
+        width: "100%",
+        height: "100%",
+        top: 0,
+        left: 0,
+        zIndex: 1
+    };
+
     var myfunc;
 
-    function shareLink(){
+    function shareLink() {
         console.log('did it');
         navigator.clipboard.writeText(window.location.toString());
-        toast('🔗  Link Copied', {
+        toast('🔗  Link Copied - Share it with a buddy!', {
             position: "top-right",
             autoClose: 500,
             hideProgressBar: true,
@@ -39,7 +51,7 @@ const Home = () => {
             draggable: true,
             progress: undefined,
             theme: "dark",
-            });
+        });
     }
 
     function updateTimer() {
@@ -53,8 +65,9 @@ const Home = () => {
             clearInterval(myfunc);
             setMinutesLeft(0);
             setSecondsLeft(0);
-            document.getElementById("timerDone").classList.remove("hidden");
+            document.getElementById("timerDone").classList.remove("hidden");            
             document.title = 'Timer Done!';
+            fire();
         } else {
             clearInterval(myfunc);
             setMinutesLeft(minutes);
@@ -104,8 +117,53 @@ const Home = () => {
         }
     }
 
+    const refAnimationInstance = useRef(null);
+
+    const getInstance = useCallback((instance) => {
+        refAnimationInstance.current = instance;
+    }, []);
+
+    const makeShot = useCallback((particleRatio, opts) => {
+        refAnimationInstance.current &&
+            refAnimationInstance.current({
+                ...opts,
+                origin: { y: 0.7 },
+                particleCount: Math.floor(200 * particleRatio)
+            });
+    }, []);
+
+    const fire = useCallback(() => {
+        makeShot(0.25, {
+          spread: 26,
+          startVelocity: 55
+        });
+    
+        makeShot(0.2, {
+          spread: 60
+        });
+    
+        makeShot(0.35, {
+          spread: 100,
+          decay: 0.91,
+          scalar: 0.8
+        });
+    
+        makeShot(0.1, {
+          spread: 120,
+          startVelocity: 25,
+          decay: 0.92,
+          scalar: 1.2
+        });
+    
+        makeShot(0.1, {
+          spread: 120,
+          startVelocity: 45
+        });
+      }, [makeShot]);
+
     return (
         <>
+            <ReactCanvasConfetti refConfetti={getInstance} style={canvasStyles} />
             <nav
                 className="relative flex w-full flex-wrap items-center justify-between lg:py-4">
                 <div className="flex w-full flex-wrap items-center justify-between px-3">
@@ -114,17 +172,17 @@ const Home = () => {
                     </div>
                 </div>
             </nav>
-            <div className="flex justify-center items-center mt-5">
+            <div className="flex justify-center items-center z-10 mt-5">
                 <h2 id="timerCard" className="text-3xl font-bold orby primary hidden">{minutesLeft > 9 ? minutesLeft : '0' + minutesLeft} : {secondsLeft > 9 ? secondsLeft : '0' + secondsLeft}</h2>
             </div>
 
-            <div className="flex justify-center items-center mt-5">
+            <div className="flex justify-center items-center z-10 mt-5">
                 <p>{timerDescription}</p>
             </div>
-            <div className="flex justify-center items-center mt-5">
+            <div className="flex justify-center items-center z-10 mt-5">
                 <h2 id='timerDone' className="text-3xl font-extrabold hidden dark:text-white">Timer Done!</h2>
             </div>
-            <div className="flex justify-center items-center mt-5">
+            <div className="flex justify-center items-center z-10 mt-5">
                 <div>
                     <button
                         className="button primary block"
@@ -135,7 +193,7 @@ const Home = () => {
                 </div>
             </div>
 
-            <div className="flex justify-center items-center mt-10">
+            <div className="flex justify-center items-center z-10 mt-10">
                 <div>
                     <button
                         className="button primary block"
