@@ -15,21 +15,20 @@ const Home = () => {
 
   async function createTimer() {
     try {
-      if(minutes, timerName)
-      {      
+      if (minutes, timerName) {
         document.getElementById("missingField").classList.add("hidden");
         const timer = {
-          minValue : minutes,
-          secValue : seconds ? seconds : 0,
-          name : timerName,
-          description : timerDescription ? timerDescription : ""
+          minValue: minutes,
+          secValue: seconds ? seconds : 0,
+          name: timerName,
+          description: timerDescription ? timerDescription : ""
         }
-  
+
         let { data, error } = await supabase.from('timer').insert(timer).select().single();
         window.location = '/' + data.id;
         if (error) throw error
       }
-      else{
+      else {
         document.getElementById("missingField").classList.remove("hidden");
       }
     } catch (error) {
@@ -42,7 +41,12 @@ const Home = () => {
   return (
     <>
       {!session ? (
-        <Auth supabaseClient={supabase} appearance={{ theme: ThemeSupa }} theme="dark" />
+
+        <>
+          <div className="flex justify-center items-center mt-5">
+            <Auth supabaseClient={supabase} appearance={{ theme: ThemeSupa }} theme="dark" />
+          </div>
+        </>
       ) : (
         <>
           <nav
@@ -113,8 +117,19 @@ const Home = () => {
           </div>
 
           <div className="flex justify-center items-center mt-5">
-            <div>              
+            <div>
               <h1 id='missingField' className='hidden'>You're missing a field, do better &#128512;</h1>
+            </div>
+          </div>
+
+          <div className="flex justify-center items-center mt-5">
+            <div>
+              <button
+                className="button block"
+                onClick={() => supabase.auth.signOut()}
+              >
+                Log Out
+              </button>
             </div>
           </div>
         </>
