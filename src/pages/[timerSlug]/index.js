@@ -4,8 +4,9 @@ import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react'
 import { ShareIcon } from '@heroicons/react/24/solid'
 import { add, parseISO } from 'date-fns'
 import { toast } from "react-toastify";
-import { Confetti } from 'react-confetti'
 import ReactCanvasConfetti from 'react-canvas-confetti';
+import Confetti from 'react-canvas-confetti';
+import ReactConfetti from 'react-confetti';
 
 const Home = () => {
     const session = useSession()
@@ -65,9 +66,11 @@ const Home = () => {
             clearInterval(myfunc);
             setMinutesLeft(0);
             setSecondsLeft(0);
-            document.getElementById("timerDone").classList.remove("hidden");            
+            document.getElementById("timerDone").classList.remove("hidden");
             document.title = 'Timer Done!';
-            fire();
+            setTimeout(()=>{fire()}, 1000);
+            setTimeout(()=>{fire()}, 2000);
+            setTimeout(()=>{fire()}, 3000);
         } else {
             clearInterval(myfunc);
             setMinutesLeft(minutes);
@@ -110,7 +113,7 @@ const Home = () => {
             console.log(error)
         } finally {
             if (timerCompletedAt) {
-                var myfunc = setInterval(function () {
+                myfunc = setInterval(function () {
                     updateTimer();
                 }, 1000);
             }
@@ -134,32 +137,32 @@ const Home = () => {
 
     const fire = useCallback(() => {
         makeShot(0.25, {
-          spread: 26,
-          startVelocity: 55
+            spread: 26,
+            startVelocity: 55
         });
-    
+
         makeShot(0.2, {
-          spread: 60
+            spread: 60
         });
-    
+
         makeShot(0.35, {
-          spread: 100,
-          decay: 0.91,
-          scalar: 0.8
+            spread: 100,
+            decay: 0.91,
+            scalar: 0.8
         });
-    
+
         makeShot(0.1, {
-          spread: 120,
-          startVelocity: 25,
-          decay: 0.92,
-          scalar: 1.2
+            spread: 120,
+            startVelocity: 25,
+            decay: 0.92,
+            scalar: 1.2
         });
-    
+
         makeShot(0.1, {
-          spread: 120,
-          startVelocity: 45
+            spread: 120,
+            startVelocity: 45
         });
-      }, [makeShot]);
+    }, [makeShot]);
 
     return (
         <>
