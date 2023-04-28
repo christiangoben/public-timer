@@ -44,7 +44,7 @@ const Home = () => {
 
         <>
           <div className="flex justify-center items-center mt-5">
-            <Auth supabaseClient={supabase} appearance={{ theme: ThemeSupa }} theme="dark" />
+            <Auth supabaseClient={supabase} appearance={{ theme: ThemeSupa }} providers={[]} theme="dark" />
           </div>
         </>
       ) : (
