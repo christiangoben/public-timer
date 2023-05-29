@@ -7,15 +7,15 @@ import { toast } from "react-toastify";
 import ReactCanvasConfetti from 'react-canvas-confetti';
 import Confetti from 'react-canvas-confetti';
 import ReactConfetti from 'react-confetti';
+import NavbarComponent from "@/components/NavbarComponent";
 
 const Home = () => {
-    const session = useSession()
     const supabase = useSupabaseClient()
+    const [minutesLeft, setMinutesLeft] = useState(null)
+    const [secondsLeft, setSecondsLeft] = useState(null)
     const [createdDateTime, setCreatedDateTime] = useState(null)
     const [minutes, setMinutes] = useState(null)
     const [seconds, setSeconds] = useState(null)
-    const [minutesLeft, setMinutesLeft] = useState(null)
-    const [secondsLeft, setSecondsLeft] = useState(null)
     const [timerName, setTimerName] = useState(null)
     const [timerDescription, setTimerDescription] = useState(null)
     const [timerCompletedAt, setTimerCompletedAt] = useState(null)
@@ -41,16 +41,16 @@ const Home = () => {
     var myfunc;
 
     function shareLink() {
-        console.log('did it');
         navigator.clipboard.writeText(window.location.toString());
-        toast('🔗  Link Copied - Share it with a buddy!', {
+        toast('Link Copied - Let that sync in!', {
             position: "top-right",
-            autoClose: 500,
+            autoClose: 1000,
             hideProgressBar: true,
             closeOnClick: true,
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
+            icon: "🔗",
             theme: "dark",
         });
     }
@@ -68,9 +68,9 @@ const Home = () => {
             setSecondsLeft(0);
             document.getElementById("timerDone").classList.remove("hidden");
             document.title = 'Timer Done!';
-            setTimeout(()=>{fire()}, 1000);
-            setTimeout(()=>{fire()}, 2000);
-            setTimeout(()=>{fire()}, 3000);
+            setTimeout(() => { fire() }, 1000);
+            setTimeout(() => { fire() }, 2000);
+            setTimeout(() => { fire() }, 3000);
         } else {
             clearInterval(myfunc);
             setMinutesLeft(minutes);
@@ -95,15 +95,15 @@ const Home = () => {
 
             if (data.created_at) {
                 setCreatedDateTime(data.created_at)
-                setMinutes(data.minValue)
-                setSeconds(data.secValue)
+                setMinutes(data.minutes)
+                setSeconds(0)
                 setTimerName(data.name)
                 setTimerDescription(data.description)
 
                 const timerCreated = parseISO(data.created_at, [0]);
                 const timerDoneAt = add(timerCreated, {
-                    minutes: data.minValue,
-                    seconds: data.secValue,
+                    minutes: data.minutes,
+                    seconds: 0,
                 });
 
                 setTimerCompletedAt(timerDoneAt.getTime());
@@ -167,14 +167,9 @@ const Home = () => {
     return (
         <>
             <ReactCanvasConfetti refConfetti={getInstance} style={canvasStyles} />
-            <nav
-                className="relative flex w-full flex-wrap items-center justify-between lg:py-4">
-                <div className="flex w-full flex-wrap items-center justify-between px-3">
-                    <div>
-                        <h2 className="text-3xl font-extrabold primary">{timerName}</h2>
-                    </div>
-                </div>
-            </nav>
+            
+            <NavbarComponent title={timerName} />
+
             <div className="flex justify-center items-center z-10 mt-5">
                 <h2 id="timerCard" className="text-3xl font-bold orby primary hidden">{minutesLeft > 9 ? minutesLeft : '0' + minutesLeft} : {secondsLeft > 9 ? secondsLeft : '0' + secondsLeft}</h2>
             </div>
@@ -191,7 +186,10 @@ const Home = () => {
                         className="button primary block"
                         onClick={() => shareLink()}
                     >
-                        <ShareIcon className="h-6 w-6" />
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="#1C1C1C" className="w-6 h-6">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" />
+                        </svg>
+
                     </button>
                 </div>
             </div>

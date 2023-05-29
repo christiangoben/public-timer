@@ -11,7 +11,8 @@ body {
   --custom-panel-color: #222;
   --custom-box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.8);
   --custom-color: white;
-  --custom-color-brand: #40BF86;
+  --button-color: #1C1C1C;
+  --custom-color-brand: #FFA500;
   --custom-color-secondary: #666;
   --custom-border: 1px solid #7d7d7d;
   --custom-border-radius: 5px;
@@ -281,9 +282,9 @@ textarea[disabled] {
 
 button,
 .button {
-  color: var(--custom-color);
-  border: var(--custom-border);
-  background-color: var(--custom-bg-color);
+  color: var(--button-color) !important;
+  background-color: var(--custom-color-brand) !important;
+  border: 1px solid var(--custom-color-brand) !important;
   display: inline-block;
   text-align: center;
   border-radius: var(--custom-border-radius);
@@ -473,4 +474,8 @@ button.primary,
   color: var(--custom-color-brand);
   margin-bottom: 10px;
   text-decoration: none;
+}
+
+.t-dOnDMp {
+  width: 350px !important;
 }
