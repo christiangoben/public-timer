@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useRouter } from "next/router";
 import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react'
-import { ShareIcon } from '@heroicons/react/24/solid'
 import { add, parseISO } from 'date-fns'
 import { toast } from "react-toastify";
 import ReactCanvasConfetti from 'react-canvas-confetti';
