@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useRouter } from "next/router";
+
 import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react'
 import { add, parseISO } from 'date-fns'
 import { toast } from "react-toastify";
@@ -108,7 +109,6 @@ const Home = () => {
                 setTimerCompletedAt(timerDoneAt.getTime());
             }
         } catch (error) {
-            alert('Error loading timer data!')
             console.log(error)
         } finally {
             if (timerCompletedAt) {
@@ -205,6 +205,17 @@ const Home = () => {
             </div>
         </>
     )
+}
+
+export async function getServerSideProps(context) {
+    const { query } = context;
+    const { timerSlug } = query;
+
+    return {
+        props: {
+            timerSlug,
+        },
+    };
 }
 
 export default Home

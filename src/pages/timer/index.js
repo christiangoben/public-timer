@@ -24,8 +24,6 @@ const Home = () => {
 
                 let { data, error } = await supabase.from('timer').insert(timer).select().single();
 
-                debugger;
-
                 window.location = '/timer/' + data.id;
                 if (error) throw error
             }

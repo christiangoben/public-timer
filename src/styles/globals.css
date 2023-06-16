@@ -479,3 +479,7 @@ button.primary,
 .t-dOnDMp {
   width: 350px !important;
 }
+
+::-webkit-calendar-picker-indicator {
+  filter: invert(1); /* Invert the color of the icon */
+}
