@@ -4,6 +4,7 @@ import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react';
 import { parseISO, set, addMinutes, intervalToDuration } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
 import { toast } from "react-toastify";
+import { padNumber } from '@/functions/utils';
 import ReactCanvasConfetti from 'react-canvas-confetti';
 import NavbarComponent from "@/components/NavbarComponent";
 
@@ -113,6 +114,7 @@ const Countdown = () => {
                 const remainingTime = countdownCompletedAt - currentTime;
 
                 if (remainingTime <= 0) {
+                    document.title = "Countdown Completed!!";
                     setCountdownExpired(true);
                     clearInterval(interval);
                 } else {
@@ -123,8 +125,20 @@ const Countdown = () => {
                     setMinutesLeft(duration.minutes);
                     setSecondsLeft(duration.seconds);
 
+                    const timeLeft = [
+                        padNumber(duration.months),
+                        padNumber(duration.days),
+                        padNumber(duration.hours),
+                        padNumber(duration.minutes),
+                        padNumber(duration.seconds)
+                    ].join(':');
+
+                    document.title = timeLeft;
+
                     const secondsContainer = document.getElementById('secondsContainer');
-                    secondsContainer.classList.remove('hidden');
+                    if (secondsContainer) {
+                        secondsContainer.classList.remove('hidden');
+                    }
                 }
             }, 1000);
 
@@ -161,53 +175,70 @@ const Countdown = () => {
             <div id="countdownCard" className="flex justify-center items-center z-10 mt-5">
                 <div className="text-3xl font-bold orby primary">
                     <div className="flex flex-wrap justify-center">
-                        <div className="countdown-item">
-                            {monthsLeft > 0 && (
+
+                        <div className="countdown-item text-center">
+                            {countdownExpired && (
                                 <>
-                                    <span className="mr-1">{monthsLeft > 9 ? monthsLeft : `0${monthsLeft}`}</span>
-                                    <span className="text-sm mr-1">months</span>
+                                    <span className="mr-1">Countdown Completed!</span>
+                                    <br />
+                                    <span className="text-sm mr-1">
+                                        Finished at: {countdownCompletedAt.toLocaleString()}
+                                    </span>
                                 </>
                             )}
                         </div>
-                        <div className="countdown-item">
-                            {daysLeft > 0 && (
-                                <>
-                                    <span className="mr-1">{daysLeft > 9 ? daysLeft : `0${daysLeft}`}</span>
-                                    <span className="text-sm mr-1">days</span>
-                                </>
-                            )}
-                        </div>
-                        <div className="countdown-item">
-                            {hoursLeft > 0 && (
-                                <>
-                                    <span className="mr-1">{hoursLeft > 9 ? hoursLeft : `0${hoursLeft}`}</span>
-                                    <span className="text-sm mr-1">hours</span>
-                                </>
-                            )}
-                        </div>
-                        <div className="countdown-item">
-                            {minutesLeft > 0 && (
-                                <>
-                                    <span className="mr-1">{minutesLeft > 9 ? minutesLeft : `0${minutesLeft}`}</span>
-                                    <span className="text-sm mr-1">minutes</span>
-                                </>
-                            )}
-                        </div>
-                        <div id="secondsContainer" className="countdown-item hidden">
-                            {secondsLeft >= 0 && (
-                                <>
-                                    <span className="mr-1">{secondsLeft > 9 ? secondsLeft : `0${secondsLeft}`}</span>
-                                    <span className="text-sm mr-1">seconds</span>
-                                </>
-                            )}
-                        </div>
+
+                        {!countdownExpired && (
+                            <>
+                                <div className="countdown-item">
+                                    {monthsLeft > 0 && (
+                                        <>
+                                            <span className="mr-1">{monthsLeft > 9 ? monthsLeft : `0${monthsLeft}`}</span>
+                                            <span className="text-sm mr-1">months</span>
+                                        </>
+                                    )}
+                                </div>
+                                <div className="countdown-item">
+                                    {daysLeft > 0 && (
+                                        <>
+                                            <span className="mr-1">{daysLeft > 9 ? daysLeft : `0${daysLeft}`}</span>
+                                            <span className="text-sm mr-1">days</span>
+                                        </>
+                                    )}
+                                </div>
+                                <div className="countdown-item">
+                                    {hoursLeft > 0 && (
+                                        <>
+                                            <span className="mr-1">{hoursLeft > 9 ? hoursLeft : `0${hoursLeft}`}</span>
+                                            <span className="text-sm mr-1">hours</span>
+                                        </>
+                                    )}
+                                </div>
+                                <div className="countdown-item">
+                                    {minutesLeft > 0 && (
+                                        <>
+                                            <span className="mr-1">{minutesLeft > 9 ? minutesLeft : `0${minutesLeft}`}</span>
+                                            <span className="text-sm mr-1">minutes</span>
+                                        </>
+                                    )}
+                                </div>
+                                <div id="secondsContainer" className="countdown-item hidden">
+                                    {secondsLeft >= 0 && (
+                                        <>
+                                            <span className="mr-1">{secondsLeft > 9 ? secondsLeft : `0${secondsLeft}`}</span>
+                                            <span className="text-sm mr-1">seconds</span>
+                                        </>
+                                    )}
+                                </div>
+                            </>
+                        )}
                     </div>
                 </div>
             </div>
 
 
             <div className="flex justify-center items-center z-10 mt-5">
-                <p>{countdownDescription}</p>
+                <p dangerouslySetInnerHTML={{ __html: countdownDescription }}></p>
             </div>
 
             {countdownExpired && (

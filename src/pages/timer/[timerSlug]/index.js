@@ -1,12 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useRouter } from "next/router";
-
-import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react'
+import { useSupabaseClient } from '@supabase/auth-helpers-react'
 import { add, parseISO } from 'date-fns'
 import { toast } from "react-toastify";
 import ReactCanvasConfetti from 'react-canvas-confetti';
-import Confetti from 'react-canvas-confetti';
-import ReactConfetti from 'react-confetti';
 import NavbarComponent from "@/components/NavbarComponent";
 
 const Home = () => {
@@ -27,6 +24,18 @@ const Home = () => {
             getTimer();
         }
     })
+
+    useEffect(() => {
+        const cleanupFunction = () => {
+            clearInterval(myfunc);
+        };
+
+        window.addEventListener('beforeunload', cleanupFunction);
+
+        return () => {
+            window.removeEventListener('beforeunload', cleanupFunction);
+        };
+    }, []);
 
     const canvasStyles = {
         position: "fixed",
@@ -56,28 +65,31 @@ const Home = () => {
     }
 
     function updateTimer() {
-        document.getElementById("timerCard").classList.remove("hidden");
-        var now = new Date().getTime();
-        var timeleft = timerCompletedAt - now;
-        var minutes = Math.floor(timeleft / 60000);
-        var seconds = ((timeleft % 60000) / 1000).toFixed(0) == 60 ? 59 : ((timeleft % 60000) / 1000).toFixed(0);
-
-        if (timeleft < 0) {
-            clearInterval(myfunc);
-            setMinutesLeft(0);
-            setSecondsLeft(0);
-            document.getElementById("timerDone").classList.remove("hidden");
-            document.title = 'Timer Done!';
-            setTimeout(() => { fire() }, 1000);
-            setTimeout(() => { fire() }, 2000);
-            setTimeout(() => { fire() }, 3000);
-        } else {
-            clearInterval(myfunc);
-            setMinutesLeft(minutes);
-            setSecondsLeft(seconds);
-            let minString = minutes > 9 ? minutes : '0' + minutes;
-            let secString = seconds > 9 ? seconds : '0' + seconds;
-            document.title = minString + " : " + secString;
+        if(document.getElementById("timerCard"))
+        {
+            document.getElementById("timerCard").classList.remove("hidden");
+            var now = new Date().getTime();
+            var timeleft = timerCompletedAt - now;
+            var minutes = Math.floor(timeleft / 60000);
+            var seconds = ((timeleft % 60000) / 1000).toFixed(0) == 60 ? 59 : ((timeleft % 60000) / 1000).toFixed(0);
+    
+            if (timeleft < 0) {
+                clearInterval(myfunc);
+                setMinutesLeft(0);
+                setSecondsLeft(0);
+                document.getElementById("timerDone").classList.remove("hidden");
+                document.title = 'Timer Done!';
+                setTimeout(() => { fire() }, 1000);
+                setTimeout(() => { fire() }, 2000);
+                setTimeout(() => { fire() }, 3000);
+            } else {
+                clearInterval(myfunc);
+                setMinutesLeft(minutes);
+                setSecondsLeft(seconds);
+                let minString = minutes > 9 ? minutes : '0' + minutes;
+                let secString = seconds > 9 ? seconds : '0' + seconds;
+                document.title = minString + " : " + secString;
+            }
         }
     }
 
@@ -166,7 +178,7 @@ const Home = () => {
     return (
         <>
             <ReactCanvasConfetti refConfetti={getInstance} style={canvasStyles} />
-            
+
             <NavbarComponent title={timerName} />
 
             <div className="flex justify-center items-center z-10 mt-5">

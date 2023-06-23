@@ -297,8 +297,15 @@ button,
 
 button.primary,
 .button.primary {
-  background-color: var(--custom-color-brand);
-  border: 1px solid var(--custom-color-brand);
+  background-color: var(--custom-color-brand) !important;
+  border: 1px solid var(--custom-color-brand) !important;
+}
+
+button.secondary,
+.button.secondary {
+  color: var(--custom-color) !important;
+  background-color: var(--custom-color-secondary) !important;
+  border: 1px solid var(--custom-color-secondary) !important;
 }
 
 /* Widgets */
